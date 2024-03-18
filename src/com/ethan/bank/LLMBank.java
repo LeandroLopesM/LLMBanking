@@ -56,6 +56,27 @@ public class LLMBank {
                 case "history", "log", "extract" -> {
                     client.printLog();
                 }
+
+                case "admin", "sysad", "enter" -> {
+                    int key = Integer.parseInt(scn.next().trim());
+
+                    if(client.checkAdmin()) {
+                        client.admin(key);
+                    }
+
+                    boolean exitAdmin = false;
+                    while(!exitAdmin) {
+                        System.out.print("SYS@" + client.getCurrentUser()[0] + "> ");
+                        command = scn.next();
+
+                        switch(command) {
+                            case "exit", "dead", "out" -> {
+                                exitAdmin = true;
+                            }
+                        }
+                    }
+                }
+
             }
         }
 

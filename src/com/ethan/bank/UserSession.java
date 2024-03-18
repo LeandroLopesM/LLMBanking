@@ -10,6 +10,7 @@ public class UserSession {
     private final String username;
     private final String password;
     private long accBalance;
+
     File logFile = null;
     private int logIndex = 0;
 
@@ -47,12 +48,12 @@ public class UserSession {
                 break;
             }
         }
-        String logLead = (logIndex < 10)? ("-" + Integer.toString(logIndex)) : Integer.toString(logIndex);
+        String logLead = (logIndex < 10)? ("-" + logIndex) : Integer.toString(logIndex);
         logFile = new File(logLead + username + ".log");
     }
 
     public void exit() {
-        System.exit(0); // i wanted to do something here but i forgor
+        System.exit(0); // I wanted to do something here but i forgor
     }
 
     public void printLog() {
@@ -89,7 +90,7 @@ public class UserSession {
     public long getAccBalance() throws BalanceNotFoundException {
         try {
             BufferedReader reader = new BufferedReader(new FileReader("balance.txt"));
-            String fileLine = " ";
+            String fileLine;
 
             while((fileLine = reader.readLine()) != null) {
                 if(fileLine.startsWith(username)) {
@@ -112,9 +113,18 @@ public class UserSession {
         return YELLOW + format + RESET;
     }
 
+    public boolean checkAdmin() {
+        return username.equals("admin");
+    }
 
-
-
+    public void admin(int key) {
+        int KEY = 95153;
+        if(key != KEY) {
+            System.out.println("Admin access attempt denied. Exiting...");
+            exit();
+        }
+        // if not above code runs as normal and continues to the admin prompt back in LLMBank.java:65
+    }
 
     public void withdraw(long amount) {
         if(accBalance <= 0) {
