@@ -1,9 +1,7 @@
 package com.ethan;
 
 import java.io.*;
-import java.text.Format;
 import java.text.NumberFormat;
-import java.util.Calendar;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -41,11 +39,8 @@ public class LLMBank {
             System.out.print("LLM@" + username + " > ");
             command = scn.next();
 
-
             switch (command.toUpperCase()) {
-                case "BALANCE" -> {
-                    System.out.println("Total account balance:    " + accBalance);
-                }
+                case "BALANCE" -> System.out.println("Total account balance: " + format(accBalance));
                 case "LOGOUT", "EXIT" -> {
                     System.out.println("Exiting...");
                     shouldExit = true;
@@ -94,7 +89,7 @@ public class LLMBank {
             }
         }
         scn.close();
-        while(log.renameTo(new File("PAST--" + username + (new Random().nextInt(100)) + ".log")) != true);
+        while(!log.renameTo(new File("PAST--" + username + (new Random().nextInt(100)) + ".log")));
     }
 
     public String format(long rawValue) {
@@ -108,7 +103,9 @@ public class LLMBank {
         try {
             log = new File("--" + username + ".log");
             if(!log.exists()) {
-                log.createNewFile();
+                if(!log.createNewFile()) {
+                    System.err.println("accLog :: LLMBank.java ERROR: Something went wrong while creating a new log file");
+                }
             }
 
             logger = new BufferedWriter(new FileWriter(log, true));
