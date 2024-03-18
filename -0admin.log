@@ -1,0 +1,16 @@
+DEPOSIT: $500.00 Balance: $200,500.00
+WITHDREW: $500,000.00 Current balance: -$299,500.00
+WARN: Account locked from outbound transactions due to debt
+DEPOSIT: $500.00 Balance: $200,500.00
+WITHDREW: $20.00Current balance: $200,480.00
+WITHDREW: $2,000,000.00 Current balance: -$1,799,520.00
+WARN: Account locked from outbound transactions due to debt
+LOG: Attempted withdraw; blocked due to insufficient funds
+DEPOSIT: $500.00 Balance: $200,500.00
+WITHDREW: $60,000.00Current balance: $140,500.00
+DEPOSIT: $50.00 Balance: $140,550.00
+WITHDREW: $2,000,000.00 Current balance: -$1,859,450.00
+WARN: Account locked from outbound transactions due to debt
+LOG: Attempted withdraw; blocked due to insufficient funds
+DEPOSIT: $1,000,000.00 Balance: -$859,450.00
+DEPOSIT: $900,000.00 Balance: $40,550.00

@@ -1,11 +1,11 @@
-package com.ethan;
+package com.ethan.bank;
 
 import java.io.*;
 import java.text.NumberFormat;
 import java.util.Random;
 import java.util.Scanner;
 
-public class LLMBank {
+public class oldVersion {
     public static final String YELLOW = "\u001B[33m";
     public static final String RESET = "\u001B[0m";
 
@@ -13,7 +13,7 @@ public class LLMBank {
     File log;
     String username;
     String userPass;
-    public LLMBank() {
+    public oldVersion() {
         Scanner scn = new Scanner(System.in);
 
         System.out.print("Username: ");
@@ -41,10 +41,12 @@ public class LLMBank {
 
             switch (command.toUpperCase()) {
                 case "BALANCE" -> System.out.println("Total account balance: " + format(accBalance));
+
                 case "LOGOUT", "EXIT" -> {
                     System.out.println("Exiting...");
                     shouldExit = true;
                 }
+
                 case "WITHDRAW" -> {
                     if(accBalance <= 0) {
                         System.out.println(YELLOW + "Your account is currently " + format(Math.abs(accBalance)) + " in debt, please rectify before withdrawing." + RESET);
@@ -73,23 +75,46 @@ public class LLMBank {
                     System.out.println("Successfully withdrawn " + format(withdrawn) + " from balance, Remaining: " + format(accBalance));
                     accLog("WITHDREW:  " + format(withdrawn) + "  Remaining:  " + format(accBalance));
                 }
+
                 case "DEPOSIT" -> {
-                    System.out.println("add acc balance");
+                    long deposit = Integer.parseInt(scn.next().replace(" ", ""));
+
+                    accBalance += deposit;
+
+                    System.out.println("Successfully deposited " + format(deposit) + " into account. New balance: " + format(accBalance));
+                    accLog("DEPOSITED: " + format(deposit) + " Balance: " + format(accBalance));
                 }
+
                 case "EXTRACT", "HISTORY" -> {
-                    System.out.println("print history");
+                    getHistory();
                 }
+
                 case "INTEREST" -> {
                     String values = scn.nextLine();
                     System.out.println("interesting" + values);
                 }
+
                 default -> {
-                    System.out.println("def");
+                    System.out.println("Unknown command");
                 }
+
             }
         }
         scn.close();
         while(!log.renameTo(new File("PAST--" + username + (new Random().nextInt(100)) + ".log")));
+    }
+
+    public void getHistory() {
+        try {
+            BufferedReader logReader = new BufferedReader(new FileReader(log));
+            String line;
+
+            while((line = logReader.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public String format(long rawValue) {
