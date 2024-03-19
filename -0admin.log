@@ -14,3 +14,8 @@ WARN: Account locked from outbound transactions due to debt
 LOG: Attempted withdraw; blocked due to insufficient funds
 DEPOSIT: $1,000,000.00 Balance: -$859,450.00
 DEPOSIT: $900,000.00 Balance: $40,550.00
+DEPOSIT: $600.00 Balance: $200,600.00
+DEPOSIT: $600.00 Balance: $200,600.00
+WITHDREW: $60,000.00Current balance: $1,940,000.00
+DEPOSIT: $80.00 Balance: $200,080.00
+DEPOSIT: $500.00 Balance: $200,580.00

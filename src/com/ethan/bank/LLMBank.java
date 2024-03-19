@@ -1,8 +1,5 @@
 package com.ethan.bank;
 
-import java.io.*;
-import java.text.NumberFormat;
-import java.util.Random;
 import java.util.Scanner;
 
 /*
@@ -14,6 +11,9 @@ import java.util.Scanner;
         - hashing system for password
         - figure out json parsing
         - comment this mess of a code
+        - add help command
+        - add command help (error command format descriptors)
+        - fix logfile creation
  */
 
 
@@ -45,7 +45,7 @@ public class LLMBank {
 
                 case "exit", "logout" -> {
                     System.out.println("Exiting...");
-                    client.exit();
+                    shouldClose = true;
                 }
 
                 case "deposit" -> {
@@ -53,9 +53,7 @@ public class LLMBank {
                     client.deposit(value);
                 }
 
-                case "history", "log", "extract" -> {
-                    client.printLog();
-                }
+                case "history", "log", "extract" -> client.printLog();
 
                 case "admin", "sysad", "enter" -> {
                     int key = Integer.parseInt(scn.next().trim());
@@ -64,6 +62,8 @@ public class LLMBank {
                         client.admin(key);
                     }
 
+                    AdminSession sysadmin = new AdminSession(client, key);
+
                     boolean exitAdmin = false;
                     while(!exitAdmin) {
                         System.out.print("SYS@" + client.getCurrentUser()[0] + "> ");
@@ -71,7 +71,15 @@ public class LLMBank {
 
                         switch(command) {
                             case "exit", "dead", "out" -> {
+                                sysadmin.exitMode();
                                 exitAdmin = true;
+                            }
+                            case "create", "new", "make" -> {
+                                String accName = scn.next().trim();
+                                String accPass = scn.next().trim();
+                                long accInitBalance = Integer.parseInt(scn.next().trim());
+
+                                sysadmin.newAccount(accName, accPass, accInitBalance);
                             }
                         }
                     }

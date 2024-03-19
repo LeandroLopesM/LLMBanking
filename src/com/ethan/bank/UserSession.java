@@ -3,10 +3,13 @@ package com.ethan.bank;
 import com.ethan.bank.exceptions.BalanceNotFoundException;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class UserSession {
+    private boolean isAdmin = false;
     private final String username;
     private final String password;
     private long accBalance;
@@ -52,8 +55,36 @@ public class UserSession {
         logFile = new File(logLead + username + ".log");
     }
 
-    public void exit() {
-        System.exit(0); // I wanted to do something here but i forgor
+    public void exit() { // I wanted to do something here but i forgor
+        //i remberd
+
+        try {
+            BufferedReader read = new BufferedReader(new FileReader("balance.txt"));
+            String line;
+            ArrayList<String> file = new ArrayList<>();
+
+
+            while((line = read.readLine()) != null) {
+                file.add(line);
+            }
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter("balance.txt"));
+
+            for(String sub : file) {
+                if(sub.startsWith(username)) {
+                    sub = username + '\t' + accBalance;
+                }
+                writer.write(sub);
+                writer.newLine();
+            }
+
+            writer.close();
+            read.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        System.exit(0);
     }
 
     public void printLog() {
@@ -114,7 +145,7 @@ public class UserSession {
     }
 
     public boolean checkAdmin() {
-        return username.equals("admin");
+        return username.equals("admin") || isAdmin;
     }
 
     public void admin(int key) {
@@ -123,6 +154,7 @@ public class UserSession {
             System.out.println("Admin access attempt denied. Exiting...");
             exit();
         }
+        isAdmin = !isAdmin;
         // if not above code runs as normal and continues to the admin prompt back in LLMBank.java:65
     }
 
