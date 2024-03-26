@@ -6,10 +6,10 @@ import java.util.Scanner;
 /*
     TBD:
         - Admin mode
-        -   - Adding accs
-        -   - setting balance
-        -   - etc.
+        -   - setting names
+        -   - setting password
         - hashing system for password
+        - actually hide the password input somehow
         - figure out json parsing
         - comment this mess of a code
         - add help command
@@ -94,14 +94,23 @@ public class LLMBank {
 
                                         try { sysadmin.setBalance(name, newVal); }
                                         catch (IOException e) { throw new RuntimeException(e); }
+                                        System.out.println("Balance for account " + name + " successfully set to " + UserSession.format(newVal));
                                     }
 
                                     case "name" -> {
-                                        // change ze naem
+                                        String oldName = scn.next();
+                                        String newName = scn.next();
+
+                                        try { sysadmin.setName(oldName, newName); }
+                                        catch (IOException e) { throw new RuntimeException(e); }
                                     }
 
                                     case "password" -> {
-                                        // change le pass
+                                        String name = scn.next();
+                                        String newPass = scn.next();
+
+                                        try { syadmin.setPass(name, newPass); }
+                                        catch (IOException e) { throw new RuntimeException(e); }
                                     }
                                 }
                             }
