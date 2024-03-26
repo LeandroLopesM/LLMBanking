@@ -109,7 +109,7 @@ public class LLMBank {
                                         String name = scn.next();
                                         String newPass = scn.next();
 
-                                        try { syadmin.setPass(name, newPass); }
+                                        try { sysadmin.setPass(name, newPass); }
                                         catch (IOException e) { throw new RuntimeException(e); }
                                     }
                                 }
