@@ -1,2 +1,2 @@
-admin	200580
-Kya	20000
+admin	200610
+Kya	20

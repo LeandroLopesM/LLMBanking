@@ -1,5 +1,6 @@
 package com.ethan.bank;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 /*
@@ -37,7 +38,7 @@ public class LLMBank {
 
             switch (command.toLowerCase()) {
                 case "withdraw" -> {
-                    int value = Integer.parseInt(scn.next().replace(" ", ""));
+                    int value = Integer.parseInt(scn.next().trim());
                     client.withdraw(value);
                 }
 
@@ -45,7 +46,7 @@ public class LLMBank {
 
                 case "exit", "logout" -> {
                     System.out.println("Exiting...");
-                    shouldClose = true;
+                    shouldClose = true; // will fall down to the end of the while loop and into client.exit();
                 }
 
                 case "deposit" -> {
@@ -69,11 +70,12 @@ public class LLMBank {
                         System.out.print("SYS@" + client.getCurrentUser()[0] + "> ");
                         command = scn.next();
 
-                        switch(command) {
+                        switch(command.toLowerCase()) {
                             case "exit", "dead", "out" -> {
                                 sysadmin.exitMode();
                                 exitAdmin = true;
                             }
+
                             case "create", "new", "make" -> {
                                 String accName = scn.next().trim();
                                 String accPass = scn.next().trim();
@@ -81,10 +83,31 @@ public class LLMBank {
 
                                 sysadmin.newAccount(accName, accPass, accInitBalance);
                             }
+
+                            case "set", "swap", "change" -> {
+                                command = scn.next();
+
+                                switch (command.toLowerCase()) {
+                                    case "balance" -> {
+                                        String name = scn.next();
+                                        int newVal = Integer.parseInt(scn.next().trim());
+
+                                        try { sysadmin.setBalance(name, newVal); }
+                                        catch (IOException e) { throw new RuntimeException(e); }
+                                    }
+
+                                    case "name" -> {
+                                        // change ze naem
+                                    }
+
+                                    case "password" -> {
+                                        // change le pass
+                                    }
+                                }
+                            }
                         }
                     }
                 }
-
             }
         }
 

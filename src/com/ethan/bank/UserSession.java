@@ -58,30 +58,36 @@ public class UserSession {
     public void exit() { // I wanted to do something here but i forgor
         //i remberd
 
+//        try {
+//            BufferedReader read = new BufferedReader(new FileReader("balance.txt"));
+//            String line;
+//            ArrayList<String> file = new ArrayList<>();
+//
+//
+//            while((line = read.readLine()) != null) {
+//                file.add(line);
+//            }
+//
+//            BufferedWriter writer = new BufferedWriter(new FileWriter("balance.txt"));
+//
+//            for(String sub : file) {
+//                if(sub.startsWith(username)) {
+//                    sub = username + '\t' + accBalance;
+//                }
+//                writer.write(sub);
+//                writer.newLine();
+//            }
+//
+//            writer.close();
+//            read.close();
+//        } catch(Exception e) {
+//            e.printStackTrace();
+//        }
+
         try {
-            BufferedReader read = new BufferedReader(new FileReader("balance.txt"));
-            String line;
-            ArrayList<String> file = new ArrayList<>();
-
-
-            while((line = read.readLine()) != null) {
-                file.add(line);
-            }
-
-            BufferedWriter writer = new BufferedWriter(new FileWriter("balance.txt"));
-
-            for(String sub : file) {
-                if(sub.startsWith(username)) {
-                    sub = username + '\t' + accBalance;
-                }
-                writer.write(sub);
-                writer.newLine();
-            }
-
-            writer.close();
-            read.close();
-        } catch(Exception e) {
-            e.printStackTrace();
+            new AdminSession(this, 95153).setBalance(this.username, accBalance);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         System.exit(0);
