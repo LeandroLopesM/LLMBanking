@@ -1,6 +1,7 @@
 package com.ethan.bank;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /*
@@ -37,16 +38,15 @@ public class LLMBank {
             System.out.print("LLM@" + client.getCurrentUser()[0] + "> ");
             command = scn.next().split(" ");
 
+            if(Arrays.asList(command).contains("?") && Utils.isHelpCommand(command[0], Utils.CLIENT)) {
+                UserSession.getHelp(command[0].toLowerCase());
+                continue;
+            }
+
             switch (command[0].trim().toLowerCase()) {
 
                 case "withdraw" -> {
-                    // { withdraw, command }
-
-                    if(command[1].equals("?")) {
-                        UserSession.getHelp("withdraw");
-                        continue;
-                    }
-                    else if(!Utils.isNumeric(command[1].trim())) {
+                    if(!Utils.isNumeric(command[1].trim())) {
                         System.out.println(Utils.style("**ERROR: Incorrect usage of 'withdraw' (argument passed is not integer)**"));
                         System.out.println(Utils.style("**Please use 'withdraw ?' or 'withdraw help' for detailed help about the command**"));
                         continue;
@@ -59,11 +59,7 @@ public class LLMBank {
                 }
 
                 case "deposit" -> {
-                    if(command[1].equals("?")) {
-                        UserSession.getHelp("deposit");
-                        continue;
-                    }
-                    else if(!Utils.isNumeric(command[1])) {
+                    if(!Utils.isNumeric(command[1])) {
                         System.out.println(Utils.style("**ERROR: Incorrect usage of 'deposit' (argument passed is not integer)**"));
                         System.out.println(Utils.style("**Please use 'deposit ?' or 'deposit help' for detailed help about the command**"));
                         continue;
@@ -80,7 +76,7 @@ public class LLMBank {
                     shouldClose = true; // will fall down to the end of the while loop and into client.exit();
                 }
 
-                case "history", "log", "extract" -> client.printLog();
+                case "history", "log" -> client.printLog();
 
                 case "help", "?" -> System.out.println(
                             """
@@ -95,7 +91,7 @@ public class LLMBank {
                             """
                     );
 
-                case "admin", "sysad", "enter" -> {
+                case "admin", "sysadmin", "enter" -> {
                     int key = (Utils.isNumeric(command[1]))? Integer.parseInt(command[1]) : -1;
 
                     if(client.checkAdmin()) {
@@ -109,6 +105,12 @@ public class LLMBank {
                         System.out.print("SYS@" + client.getCurrentUser()[0] + "> ");
                         command = scn.next().split(" ");
 
+                        if(Arrays.asList(command).contains("?") && Utils.isHelpCommand(command[0], Utils.ADMIN)) {
+                            UserSession.getHelp("admin." + command[Arrays.asList(command).lastIndexOf("?") - 1]);
+                            continue;
+//                            Yes overcomplicated but its basically to save me the trouble when I eventually add more functionality to admin mode
+                        }
+
                         switch(command[0].toLowerCase().trim()) {
 
                             case "exit" -> {
@@ -116,12 +118,18 @@ public class LLMBank {
                                 exitAdmin = true;
                             }
 
-                            case "new" -> {
+                            case "help", "?" -> System.out.println(Utils.style(
+                                    """
+                                            **The following is a list of available commands
+                                            new < Name[String] > < Password[String] > < Balance[long/int] >  | Creates a new account
+                                            set balance < Name[String] > < newBalance[long/int] >            | Changes the balance of the given account.
+                                            set name < oldName[String] > < newName[String] >                 | Changes the name of the given account.
+                                            set password < Name[String] > < newPass[String] >                | Changes the password of the given account.**
+                                    """
+                            ));
 
-                                if(command[1].equals("?")) {
-                                    UserSession.getHelp("admin.new");
-                                    continue;
-                                } else if(command.length != 4 || !Utils.isNumeric(command[3])) {
+                            case "new" -> {
+                                if(command.length != 4 || !Utils.isNumeric(command[3])) {
                                     System.out.println(Utils.style("**ERROR: Incorrect usage of admin." + command[0] + " (" +
                                         ((!Utils.isNumeric((command[3])))? "Expected int, got char" : "Missing arguments") +
                                     ")**"));
@@ -136,10 +144,8 @@ public class LLMBank {
                                 sysadmin.newAccount(accName, accPass, accInitBalance);
                             }
 
-                            case "set" -> { //, "swap", "change" -> {
-//                                { set, value, param1, param2, :param3: }
-
-                                if(command[2].equals("?")) {
+                            case "set" -> {
+                                if(command[2].equals("?") && Utils.isHelpCommand(command[1], Utils.ADMIN)) {
                                     UserSession.getHelp("admin.set." + command[1].toLowerCase().trim());
                                     continue;
                                 }
@@ -155,8 +161,7 @@ public class LLMBank {
                                         String name = command[2];
                                         int newVal = Integer.parseInt(command[3]);
 
-                                        try { sysadmin.setBalance(name, newVal); }
-                                        catch (IOException e) { throw new RuntimeException(e); }
+                                        sysadmin.setBalance(name, newVal);
                                         System.out.println("Balance for account " + name + " successfully set to " + Utils.dollarFormat(newVal));
                                     }
 

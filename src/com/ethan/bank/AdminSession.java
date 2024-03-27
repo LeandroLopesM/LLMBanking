@@ -34,7 +34,7 @@ public class AdminSession {
         }
     }
 
-    public void setBalance(String accName, long newValue) throws IOException {
+    public void setBalance(String accName, long newValue) {
         try {
             BufferedReader read = new BufferedReader(new FileReader("balance.txt"));
             String line;

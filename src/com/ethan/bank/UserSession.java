@@ -55,11 +55,7 @@ public class UserSession {
     public void exit() { // I wanted to do something here but i forgor
         //i remberd
 
-        try {
-            new AdminSession(this, 95153).setBalance(this.username, accBalance);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        new AdminSession(this, 95153).setBalance(this.username, accBalance);
 
         System.exit(0);
     }
@@ -149,6 +145,7 @@ public class UserSession {
                     **Command: (admin.set)PASS < Name[String] > < newPass[String] >
                                Name[String]      -> Account name
                                newPass[String]   -> New account password**"""));
+            default -> System.out.println(" There seems to be no help available for" + command + " as it either takes no parameters or is a protected function");
         }
     }
 
