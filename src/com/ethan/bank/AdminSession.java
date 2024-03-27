@@ -113,8 +113,27 @@ public class AdminSession {
         read.close();
     }
 
-    public void setPass(String name, String newPass) {
-        //tbd
+    public void setPass(String name, String newPass) throws IOException {
+        BufferedReader read = new BufferedReader(new FileReader("users.txt"));
+        ArrayList<String> file = new ArrayList<>();
+        String line;
+
+        while((line = read.readLine()) != null) {
+            if(line.startsWith(name)) {
+                line = name + '\t' + newPass;
+            }
+            file.add(line);
+        }
+
+        BufferedWriter write = new BufferedWriter(new FileWriter("users.txt"));
+
+        for(String sub : file) {
+            write.write(sub);
+            write.newLine();
+        }
+
+        write.close();
+        read.close();
     }
 
     public void exitMode() {

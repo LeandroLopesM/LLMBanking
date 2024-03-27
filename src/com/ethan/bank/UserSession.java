@@ -3,9 +3,6 @@ package com.ethan.bank;
 import com.ethan.bank.exceptions.BalanceNotFoundException;
 
 import java.io.*;
-import java.lang.reflect.Array;
-import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class UserSession {
@@ -57,32 +54,6 @@ public class UserSession {
 
     public void exit() { // I wanted to do something here but i forgor
         //i remberd
-
-//        try {
-//            BufferedReader read = new BufferedReader(new FileReader("balance.txt"));
-//            String line;
-//            ArrayList<String> file = new ArrayList<>();
-//
-//
-//            while((line = read.readLine()) != null) {
-//                file.add(line);
-//            }
-//
-//            BufferedWriter writer = new BufferedWriter(new FileWriter("balance.txt"));
-//
-//            for(String sub : file) {
-//                if(sub.startsWith(username)) {
-//                    sub = username + '\t' + accBalance;
-//                }
-//                writer.write(sub);
-//                writer.newLine();
-//            }
-//
-//            writer.close();
-//            read.close();
-//        } catch(Exception e) {
-//            e.printStackTrace();
-//        }
 
         try {
             new AdminSession(this, 95153).setBalance(this.username, accBalance);
@@ -150,6 +121,37 @@ public class UserSession {
         return YELLOW + format + RESET;
     }
 
+    public static void getHelp(String command) {
+        switch(command.toLowerCase()) {
+            case "withdraw" -> System.out.println(Utils.style("**Command: WITHDRAW < Value[int/long] > " + '\n' +
+                                  "         Value[int/long] -> Long, unsigned integer value to be retracted from total account balance**"));
+
+            case "deposit" -> System.out.println(Utils.style("**Command: DEPOSIT < Value[int/long] > " + '\n' +
+                                  "         Value[int/long] -> Long, unsigned integer value to be added to total account balance**"));
+
+            case "admin.new" -> System.out.println(Utils.style("""
+                    **Command: (admin)NEW < Name[String] > < Password[String] > < Balance[long/int] >
+                             Name[String]         -> The name for the new account being created
+                             Password[String]     -> The password for the new account being created
+                             Balance[int/long]    -> Long, unsigned integer starter balance for the created account**"""));
+
+            case "admin.set.balance" -> System.out.println(Utils.style("""
+                    **Command: (admin.set)BALANCE < Name[String] > < Balance[long/int] >
+                             Name[String]         -> Account name
+                             Balance[int/long]    -> Long, unsigned integer balance to be set for account**"""));
+
+            case "admin.set.name" -> System.out.println(Utils.style("""
+                    **Command: (admin.set)NAME < oldName[String] > < newName[String] >
+                             oldName[String]      -> Old account name
+                             newName[String]      -> New account name**"""));
+            
+            case "admin.set.pass" -> System.out.println(Utils.style("""
+                    **Command: (admin.set)PASS < Name[String] > < newPass[String] >
+                               Name[String]      -> Account name
+                               newPass[String]   -> New account password**"""));
+        }
+    }
+
     public boolean checkAdmin() {
         return username.equals("admin") || isAdmin;
     }
@@ -167,23 +169,23 @@ public class UserSession {
     public void withdraw(long amount) {
         if(accBalance <= 0) {
             System.out.println(warn("This account is currently " +
-                ((accBalance == 0)? "empty" : (format(accBalance) + " in debt")) +
+                ((accBalance == 0)? "empty" : (Utils.dollarFormat(accBalance) + " in debt")) +
                 " and cannot be withdrawn from."));
             log("LOG: Attempted withdraw; blocked due to insufficient funds");
             return;
         }
         else if((accBalance - amount) < 0) {
             Scanner tmp = new Scanner(System.in);
-            String answer = "n"; // Set default to no (prevents accidental debt)
+            String answer; // Set default to no (prevents accidental debt)
 
-            System.out.println(warn("WARNING: This action will put your account " + format(Math.abs(accBalance - amount)) + " into debt."));
+            System.out.println(warn("WARNING: This action will put your account " + Utils.dollarFormat(Math.abs(accBalance - amount)) + " into debt."));
             System.out.print(warn("Are you sure you'd like to proceed? [Y/N]: "));
             answer = tmp.next();
 
             if(answer.equalsIgnoreCase("y")) {
                 accBalance -= amount;
 
-                log("WITHDREW: " + format(amount) + " Current balance: " + format(accBalance));
+                log("WITHDREW: " + Utils.dollarFormat(amount) + " Current balance: " + Utils.dollarFormat(accBalance));
                 log("WARN: Account locked from outbound transactions due to debt");
             }
             else {
@@ -194,8 +196,8 @@ public class UserSession {
         }
         accBalance -= amount;
 
-        System.out.println("Successfully withdrew " + format(amount) + " New balance: " + format(accBalance));
-        log("WITHDREW: " + format(amount) + "Current balance: " + format(accBalance));
+        System.out.println("Successfully withdrew " + Utils.dollarFormat(amount) + " New balance: " + Utils.dollarFormat(accBalance));
+        log("WITHDREW: " + Utils.dollarFormat(amount) + "Current balance: " + Utils.dollarFormat(accBalance));
     }
 
     public long getBalance() {
@@ -204,14 +206,14 @@ public class UserSession {
 
     public void deposit(long amount) {
         accBalance += amount;
-        log("DEPOSIT: " + format(amount) + " Balance: " + format(accBalance));
-        System.out.println("Successfully deposited " + format(amount) + " into your account. New balance: " + format(accBalance));
+        log("DEPOSIT: " + Utils.dollarFormat(amount) + " Balance: " + Utils.dollarFormat(accBalance));
+        System.out.println("Successfully deposited " + Utils.dollarFormat(amount) + " into your account. New balance: " + Utils.dollarFormat(accBalance));
     }
 
-    public static String format(long amount) {
-        NumberFormat format = NumberFormat.getCurrencyInstance();
-        return format.format(amount);
-    }
+//    public static String Utils.dollarFormat(long amount) {
+//        NumberFormat format = NumberFormat.getCurrencyInstance();
+//        return format.format(amount);
+//    }
 
     public String[] getCurrentUser() {
         return new String[] {username, password};
