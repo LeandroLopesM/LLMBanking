@@ -12,12 +12,7 @@ import java.util.Scanner;
         - actually hide the password input somehow
         - figure out json parsing
         - comment this mess of a code
-        - fix logfile creation
-        - Normalize function???
  */
-
-
-
 
 public class LLMBank {
     public LLMBank() {

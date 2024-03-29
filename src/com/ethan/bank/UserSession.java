@@ -42,14 +42,40 @@ public class UserSession {
         File[] files = rootFolder.listFiles();
         assert files != null;
 
+//        System.err.println("Entered log creation. rootFolder = " + rootFolder.getAbsolutePath());
+
         for(File i : files) {
+//            System.err.println("Current file: " + i.getName());
             if(i.getName().endsWith(username + ".log")) {
-                logIndex = Integer.parseInt(i.getName().substring(0, 2).replace("-", ""));
+//                System.err.println("LogFile found: " + i.getName() + " of number " + Integer.parseInt(
+//                        (i.getName().charAt(0) == '-')?
+//                                Character.toString(i.getName().charAt(1))
+//                                : Character.toString(i.getName().charAt(0))
+//                ));
+
+                logIndex = Integer.parseInt(
+                        (
+                        (i.getName().charAt(0) == '-')?
+                            Character.toString(i.getName().charAt(1))
+                        :
+                            String.valueOf(i.getName().charAt(0) + i.getName().charAt(1))
+                        )
+                ) + 1;
+
                 break;
             }
         }
         String logLead = (logIndex < 10)? ("-" + logIndex) : Integer.toString(logIndex);
+//        System.err.println("Final log name: " + logLead + username + ".log");
         logFile = new File(logLead + username + ".log");
+
+        try {
+            if (!logFile.createNewFile()) {
+                System.err.println("ERROR: LogFile already exists?");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void exit() { // I wanted to do something here but i forgor
